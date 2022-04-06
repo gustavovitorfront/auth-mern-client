@@ -1,18 +1,14 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from './styles.module.css';
 
-const Signup = () => {
+const Login = () => {
     const [data, setData] = useState({
-        firstName: "",
-        lastName: "",
         email: "",
         password: ""
     });
     const [error, setError] = useState("");
-
-    const navigate = useNavigate();
 
     const handleChange = ({ currentTarget: input }) => {
         setData({ ...data, [input.name]: input.value });
@@ -22,9 +18,10 @@ const Signup = () => {
         e.preventDefault();
 
         try {
-            const url = "http://localhost:8080/api/users";
+            const url = "http://localhost:8080/api/auth";
             const { data: res } = await axios.post(url, data);
-            navigate("/login")
+            localStorage.setItem("token", res.data);
+            window.location = "/"
             console.log(res.message);
         } catch (error) {
             if (
@@ -38,37 +35,11 @@ const Signup = () => {
     }
 
     return (
-        <div className={styles.signup_container}>
-            <div className={styles.signup_form_container}>
+        <div className={styles.login_container}>
+            <div className={styles.login_form_container}>
                 <div className={styles.left}>
-                    <h1>Bem vindo(a)</h1>
-                    <Link to="/login">
-                        <button type='button' className={styles.white_btn}>
-                            Fazer login
-                        </button>
-                    </Link>
-                </div>
-                <div className={styles.right}>
                     <form className={styles.form_container} onSubmit={handleSubmit}>
-                        <h1>Criar uma conta</h1>
-                        <input
-                            type="text"
-                            placeholder="Primeiro Nome"
-                            name="firstName"
-                            onChange={handleChange}
-                            value={data.firstName}
-                            required
-                            className={styles.input}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Sobre Nome"
-                            name="lastName"
-                            onChange={handleChange}
-                            value={data.lastName}
-                            required
-                            className={styles.input}
-                        />
+                        <h1>Acessar sua conta</h1>
                         <input
                             type="email"
                             placeholder="E-mail"
@@ -89,13 +60,21 @@ const Signup = () => {
                         />
                         {error && <div className={styles.error_msg}>{error}</div>}
                         <button className={styles.green_btn} type="submit">
-                            Cadastrar
+                            Acessar
                         </button>
                     </form>
+                </div>
+                <div className={styles.right}>
+                    <h1>Novo aqui?</h1>
+                    <Link to="/signup">
+                        <button type='button' className={styles.white_btn}>
+                            Criar uma conta
+                        </button>
+                    </Link>
                 </div>
             </div>
         </div>
     )
 };
 
-export default Signup
+export default Login

@@ -1,10 +1,14 @@
 import styles from './styles.module.css'
+import { logout } from '../../features/userSlice';
+import { useDispatch } from 'react-redux';
 
 const Main = () => {
 
+    const dispatch = useDispatch();
+
     const handleLogout = () => {
         localStorage.removeItem("token");
-        window.location.reload();
+        dispatch(logout());
     }
 
     return (

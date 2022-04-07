@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './styles.module.css';
+import {login} from '../../features/userSlice'
+import {useDispatch} from 'react-redux'
 
 const Login = () => {
     const [data, setData] = useState({
@@ -9,6 +11,9 @@ const Login = () => {
         password: ""
     });
     const [error, setError] = useState("");
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleChange = ({ currentTarget: input }) => {
         setData({ ...data, [input.name]: input.value });
@@ -20,9 +25,15 @@ const Login = () => {
         try {
             const url = "http://localhost:8080/api/auth";
             const { data: res } = await axios.post(url, data);
+
+            dispatch(login({
+                token: res.data
+            }));
+
             localStorage.setItem("token", res.data);
-            window.location = "/"
-            console.log(res.message);
+            navigate("/")
+            // window.location = "/"
+            // console.log(res.message);
         } catch (error) {
             if (
                 error.response &&
